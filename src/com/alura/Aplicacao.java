@@ -2,6 +2,7 @@ package com.alura;
 
 import java.awt.Image;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -25,12 +26,23 @@ public class Aplicacao {
 		HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 		String body = response.body();
 	
-	
+	   
 	// Extrair só os dados que interessam (titulo, poster, classificação)
 		JsonParser parser = new JsonParser();
 		List<Map<String, String>> listaDeFilmes = parser.parse(body);
 
 		for (Map<String, String> filme:listaDeFilmes) {
+			
+			String urlImagem = filme.get("image");
+			String titulo = filme.get("title");
+			InputStream inputStream = new URL(urlImagem).openStream();
+			String nomeArquivo = titulo+".png";
+		
+				
+				// Gerador de figurinhas
+				GeradoraDeFigurinhas.cria(inputStream, nomeArquivo);
+				
+		
 			System.out.println(filme.get("title"));
 			System.out.println(filme.get("image"));
 			Integer star = Integer.parseInt(filme.get("imDbRating").substring(0, 1));
